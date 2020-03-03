@@ -16,9 +16,9 @@ namespace MyMusic.Data
             this._context = context;
         }
 
-        public IArtistRepository Artists => _artistRepository = _artistRepository ?? new ArtistRepository(_context);
+        public IArtistRepository Artists => _artistRepository ??= new ArtistRepository(_context);
 
-        public IMusicRepository Musics => _musicRepository = _musicRepository ?? new MusicRepository(_context);
+        public IMusicRepository Musics => _musicRepository ??= new MusicRepository(_context);
 
         public async Task<int> CommitAsync()
         {
