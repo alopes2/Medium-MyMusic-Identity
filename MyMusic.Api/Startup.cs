@@ -1,12 +1,15 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MyMusic.Core;
+using MyMusic.Core.Models.Auth;
 using MyMusic.Core.Services;
 using MyMusic.Data;
 using MyMusic.Services;
@@ -27,8 +30,13 @@ namespace MyMusic.Api
         {
             services.AddControllers();
 
-            services.AddDbContext<MyMusicDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), x => x.MigrationsAssembly("MyMusic.Data")));
+            var dataAssemblyName = typeof(MyMusicDbContext).Assembly.GetName().Name;
+            services.AddDbContext<MyMusicDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), x => x.MigrationsAssembly(dataAssemblyName)));
             
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<MyMusicDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IMusicService, MusicService>();
             services.AddTransient<IArtistService, ArtistService>();
