@@ -32,15 +32,22 @@ namespace MyMusic.Api
 
             var dataAssemblyName = typeof(MyMusicDbContext).Assembly.GetName().Name;
             services.AddDbContext<MyMusicDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), x => x.MigrationsAssembly(dataAssemblyName)));
-            
-            services.AddIdentity<User, Role>()
+
+            services.AddIdentity<User, Role>(options =>
+                {
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireNonAlphanumeric = true;
+                    options.Password.RequireUppercase = true;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1d);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+                })
                 .AddEntityFrameworkStores<MyMusicDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IMusicService, MusicService>();
             services.AddTransient<IArtistService, ArtistService>();
-            
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "My Music", Version = "v1" });
@@ -64,9 +71,9 @@ namespace MyMusic.Api
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseRouting();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
