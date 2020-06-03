@@ -15,7 +15,10 @@ namespace MyMusic.Api.Extensions
             JwtSettings jwtSettings)
         {
             services
-                .AddAuthorization()
+                .AddAuthorization(options =>
+                {
+                    options.AddPolicy("OnlyTest", policy => policy.RequireUserName("test@test.com"));
+                })
                 .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

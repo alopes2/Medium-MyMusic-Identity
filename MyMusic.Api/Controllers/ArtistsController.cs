@@ -34,6 +34,7 @@ namespace MyMusic.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Test")]
         public async Task<ActionResult<ArtistResource>> GetArtistById(int id)
         {
             var artist = await _artistService.GetArtistById(id);
@@ -43,6 +44,7 @@ namespace MyMusic.Api.Controllers
         }
 
         [HttpPost("")]
+        [Authorize("OnlyTest")]
         public async Task<ActionResult<ArtistResource>> CreateArtist([FromBody] SaveArtistResource saveArtistResource)
         {
             var validator = new SaveArtistResourceValidator();
