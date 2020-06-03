@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MyMusic.Api.Extensions;
 using MyMusic.Api.Settings;
 using MyMusic.Core;
 using MyMusic.Core.Models.Auth;
@@ -30,6 +31,7 @@ namespace MyMusic.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+            var jwtSettings = Configuration.GetSection("Jwt").Get<JwtSettings>();
             
             services.AddControllers();
 
@@ -58,6 +60,7 @@ namespace MyMusic.Api
 
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddAuth(jwtSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +79,8 @@ namespace MyMusic.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuth();
 
             app.UseEndpoints(endpoints =>
             {
