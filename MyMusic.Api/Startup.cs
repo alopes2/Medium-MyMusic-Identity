@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MyMusic.Api.Settings;
 using MyMusic.Core;
 using MyMusic.Core.Models.Auth;
 using MyMusic.Core.Services;
@@ -28,6 +29,8 @@ namespace MyMusic.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+            
             services.AddControllers();
 
             var dataAssemblyName = typeof(MyMusicDbContext).Assembly.GetName().Name;
